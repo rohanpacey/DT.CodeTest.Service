@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>DT Code Test App</title>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+</head>
+<body>
+    <div>
+        <h3>DT Code Test - Convert Number to Text Web Service</h3>
+    </div>
+    <div>
+        Name: <input type="text" id="chequeName" size="30" />
+        Amount($): <input type="text" id="chequeValue" size="30" />
+        <input type="button" value="Submit" onclick="getValuesFromService();" />
+        <div id="output" style="padding-top: 20px;" />
+    </div>
+
+    <script>
+
+        var uri = 'api/CurrencyToText';
+        function getValuesFromService() {
+            var name = $('#chequeName').val();            
+            var value = $('#chequeValue').val();
+            if (name == "" || value == "")
+            {
+                $('#output').text("Please enter a name and an amount value.");
+                return;
+            }
+            var target = uri + '/' + encodeURIComponent(name) + '/' + encodeURIComponent(value) + '/';
+            $.getJSON(target)
+                .done(function (data) {
+                    $('#output').text(formatOutput(data));
+                })
+                .fail(function (jqXHR, textStatus, err) {
+                    var o = $.parseJSON(jqXHR.responseText);
+                    $('#output').text('Error: ' + err + " > Message:" + o.message);
+                });
+        }
+
+        function formatOutput(item) {
+            return item.name + ' : ' + item.valueText;
+        }
+
+    </script>
+</body>
+</html>
